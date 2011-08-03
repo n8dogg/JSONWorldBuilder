@@ -1,0 +1,8 @@
+#animations_window { left:0px; top:0px; width:200px; height:800px }
+#animation_window { left:202px; top:0px; width:800px; height:800px }
+#sprites_window { left:1004px; top:0px; width:250px; height:800px; }
+
+#frames { padding:5px; overflow:hidden; }
+
+input.frameImageX { /* display:none; */ width:250px; }
+input.frameImageY { width:200px; }

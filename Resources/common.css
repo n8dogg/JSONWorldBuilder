@@ -1,0 +1,28 @@
+body { position:absolute; font-family:arial; font-size:10pt; }
+div.window { width: 800px; height: 600px; background: #eee; border:1px solid black; position:absolute; }
+div.window_inner { overflow:auto; background:#fff; border-bottom:1px solid black; }
+canvas.spriteNode { position:absolute; }
+canvas.selected { border:5px dashed red; cursor:pointer; margin:-5px; }
+div.window div.title_bar { height:20px; background:#ccc; cursor:pointer; border-bottom:1px solid black; padding:5px; }
+div.button { width:50px; height:50px; border:1px solid black; cursor:hand; font-size:8pt; vertical-align:middle; text-align:center; margin:0 auto; }
+
+input.number { width:40px; }
+input.smallNumber { width:25px; }
+input.metaKey { width:80px; }
+input.metaValue { width:80px; }
+
+div.slider { margin: 10px; width:80px; }
+/*
+body{ background-color:#ddd; margin:0; color:#000; }
+
+div.content { background:#fff; overflow:auto; width:100%; height:100%; }
+
+#message_window { height:20px; color:red; }
+#map_window { height:-20px + 100%; }
+
+img.sprite_plist { max-width:240px; }
+
+.drag_sprite{ position:relative; cursor:hand; }
+.drag_shape{ position:relative; cursor:hand; }
+
+*/

@@ -1,0 +1,12 @@
+canvas.shapeNode { position:absolute; }
+canvas.maskNode { position:absolute; }
+
+#tools_window { left:0px; top:0px; width:100px; height:806px; }
+#buttons_window { left:102px; top:0px; width:1052px; height:100px; }
+#map_window { left:102px; top:102px; width:800px; height:704px }
+#nav_window { left:904px; top:102px; width:250px; height:100px; }
+#meta_window { left:904px; top:204px; width:250px; height:350px; }
+#sprites_window { left:904px; top:556px; width:250px; height:250px; }
+/* Inner content areas */
+#map { position:relative; background:#ddd; }
+#tools { text-align:center; padding-top:20px; }

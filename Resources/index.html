@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <link href="jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="jquery.min.js"></script>
+    <script src="jquery-ui.min.js"></script>
+    <script src="ruby.rb" type="text/ruby"></script>
+    <script type="text/javascript" src="misc.js"></script>
+    <script type="text/javascript" src="init.js"></script>
+		<script type="text/javascript" src="functions.js"></script>
+		<script type="text/javascript" src="triangulate.js"></script>
+		<script type="text/javascript" src="files.js"></script>
+		<link href="common.css" media="screen" rel="Stylesheet" type="text/css"/>
+    <link href="main.css" media="screen" rel="Stylesheet" type="text/css"/>
+  </head>
+  <body onload="init();">
+    <!--
+    <div id="message_window">Messages go here.</div>
+    
+		<div id="tools_window" class="content">
+ 
+		</div>
+		-->
+		
+	<div id="tools_window" class="window">
+		<div class="title_bar">Tools</div>
+	  <div id="tools_window_inner" class="window_inner">
+      <div id="tools">
+  		  <div class="button" onclick="toolsSelectTool(Tools.spriteSelector);">Sprite Selector</div>
+  		  <div class="button" onclick="toolsSelectTool(Tools.shapeSelector);">Shape Selector</div>
+  		  <div class="button" onclick="toolsSelectTool(Tools.moveCamera);">Move Camera</div>
+  		  <div class="button" onclick="toolsSelectTool(Tools.spriteStamp);">Sprite Stamp</div>
+  		  <div class="button" onclick="toolsSelectTool(Tools.drawTiledSprite);">Draw Tiled Sprite</div>
+  		  <div class="button" onclick="toolsSelectTool(Tools.createPoint);">Create Point</div>
+  		  <div class="button" onclick="toolsSelectTool(Tools.createLine);">Create Line</div>
+  		  <div class="button" onclick="toolsSelectTool(Tools.createPolygon);">Create Polygon</div>
+  		  <div class="button" onclick="toolsSelectTool(Tools.drawMask);">Draw Mask</div>
+      </div>
+	  </div>
+	</div>
+
+	<div id="buttons_window" class="window">
+		<div class="title_bar">Buttons</div>
+	  <div id="buttons_window_inner" class="window_inner">
+      <div id="buttons"></div>
+	  </div>
+	</div>
+
+	<div id="map_window" class="window">
+		<div class="title_bar">Map</div>
+	  <div id="map_window_inner" class="window_inner">
+	    <div id="map"></div>
+	  </div>
+	</div>
+
+	<div id="nav_window" class="window">
+		<div class="title_bar">Nav</div>
+	  <div id="nav_window_inner" class="window_inner">
+	    <div id="nav">
+				<button class="zoom" onclick="javascript:zoomIn();">+</button>
+				<button class="zoom" onclick="javascript:zoomOut();">-</button>
+				<span id="mapZoom"></span><br />
+				Canvas Size: <input class="number" type="text" id="canvasWidth" value="1000"/> <input class="number" type="text" id="canvasHeight" value="1000"/>
+				<button onclick="javascript:setCanvasSize();">Submit</button><br />
+			</div>
+	  </div>
+	</div>
+
+	<div id="meta_window" class="window">
+		<div class="title_bar">Map Object</div>
+	  <div id="meta_window_inner" class="window_inner">
+      <div id="meta">
+				Z: <span id="mapObjectZIndex"></span>&nbsp;
+				Pos: <span id="mapObjectPosition"></span><br />
+				Size: <span id="mapObjectSize"></span><br />
+				<hr />
+				Edit Pos: <input id="mapObjectPosXInput" type="text" class="number"/>,<input id="mapObjectPosYInput" type="text" class="number"/><br />
+				Edit Size: <input id="mapObjectWidthInput" type="text" class="number"/>,<input id="mapObjectHeightInput" type="text" class="number"/>
+				<button onclick="javascript:setObjectPosSize();">Submit Pos/Size</button>
+				<hr />
+				<button onclick="javascript:addMetaField('','');">Add</button>
+				<span id="metaFields"></span><br />
+				<button onclick="javascript:setMapObjectMetaInfo();">Submit Meta Tags</button>
+				<hr />
+				<button onclick="javascript:editSendBackward();">Send Backward</button>
+				<button onclick="javascript:editBringForward();">Bring Forward</button>
+				<button onclick="javascript:editSendToBack();">Send To Back</button>
+				<button onclick="javascript:editBringToFront();">Bring To Front</button>
+				<hr />
+				<button onclick="javascript:flipImage('x',null);">Flip Image X</button>
+				<button onclick="javascript:flipImage('y',null);">Flip Image Y</button>
+				<hr />
+				<button onclick="javascript:pasteFreeMasks();toolsSelectTool(Tools.none);">Finish Mask Edit</button>
+      </div>
+	  </div>
+	</div>
+
+	<div id="sprites_window" class="window">
+		<div class="title_bar">Sprites</div>
+	  <div id="sprites_window_inner" class="window_inner">
+      <div id="sprites"></div>
+	  </div>
+	</div>
+		
+		
+  </body>
+</html>

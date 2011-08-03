@@ -1,0 +1,20 @@
+#teams_window { left:0px; top:0px; width:200px; height:300px }
+#players_window { left:0px; top:302px; width:200px; height:508px }
+
+#team_window { left:202px; top:0px; width:400px; height:810px }
+#player_window { left:604px; top:0px; width:450px; height:810px }
+
+#sprites_window { left:1056px; top:0; width:200px; height:810px; }
+
+#team input { width:100px; }
+
+
+#teamLogoX { display:none; }
+/* #teamLogoY { display:none; } */
+#stadiumLogoX { display:none; }
+/* #stadiumLogoY { display:none; } */
+
+#awayUniform { display:none; }
+
+
+table.playerAttributes { font-size:8pt; }

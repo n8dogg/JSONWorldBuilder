@@ -1,0 +1,234 @@
+<html>
+  <head>
+    <link href="jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="jquery.min.js"></script>
+    <script src="jquery-ui.min.js"></script>
+    <script src="ruby.rb" type="text/ruby"></script>
+    <script type="text/javascript" src="misc.js"></script>
+    <script type="text/javascript" src="init_roster.js"></script>
+		<script type="text/javascript" src="functions_roster.js"></script>
+		<script type="text/javascript" src="files.js"></script>
+		<script type="text/javascript" src="jscolor/jscolor.js"></script>
+		<link href="common.css" media="screen" rel="Stylesheet" type="text/css"/>
+    <link href="main_roster.css" media="screen" rel="Stylesheet" type="text/css"/>
+  </head>
+  <body onload="init();">
+    <!--
+    <div id="message_window">Messages go here.</div>
+    
+		<div id="tools_window" class="content">
+ 
+		</div>
+		-->
+		
+	<div id="players_window" class="window">
+		<div class="title_bar">Players</div>
+	  <div id="players_window_inner" class="window_inner">
+      <div id="players"></div>
+	  </div>
+	</div>
+
+	<div id="player_window" class="window">
+		<div class="title_bar">Player Details</div>
+	  <div id="player_window_inner" class="window_inner">
+      <div id="player">
+				#: <input type="text" class="smallNumber" id="number" maxlength="2"/>
+				Position: <select id="position"><option value="P">P</option><option value="C">C</option><option value="1B">1B</option><option value="2B">2B</option>
+					<option value="SS">SS</option><option value="3B">3B</option><option value="LF">LF</option><option value="CF">CF</option><option value="RF">RF</option></select>
+				Nickname: <input type="text" id="nickname"/><br />
+      	Name: <input type="text" id="firstName"/> <input type="text" id="lastName"/><br />
+				Batting Hand: <select id="battingHand"><option value="right">Right</option><option value="left">Left</option><option value="switch">Switch</option></select>
+				Throwing Hand: <select id="throwingHand"><option value="right">Right</option><option value="left">Left</option></select><br />
+				Height: <input class="number" type="text" id="height"/>
+				Weight: <input class="number" type="text" id="weight"/><br />
+				Skin Color: <input id="skinColor" class="color"/>
+					<a href="javascript:setSkinColor('E8CBB5');">White</a> <a href="javascript:setSkinColor('5C3B31');">Black</a> 
+					<a href="javascript:setSkinColor('D1A084');">Hispanic</a><br />
+				Hair Color: <input id="hairColor" class="color"/>
+					<a href="javascript:setHairColor('FFFF63');">Blonde</a> <a href="javascript:setHairColor('000000');">Black</a> 
+					<a href="javascript:setHairColor('4A3231');">Brown</a> <a href="javascript:setHairColor('FF0000');">Red</a> 
+					<a href="javascript:setHairColor('CCCCCC');">Gray</a> <a href="javascript:setHairColor('FFFFFF');">White</a><br />
+				Facial Hair Type: <select id="facialHairType"><option value="none">None</option><option value="mustache">Mustache</option>
+					<option value="beard">Beard</option></select><br />
+				Hair Type: <select id="hairType"><option value="normal">Normal</option><option value="bald">Bald</option></select><br />
+				Stats:
+				
+				
+					<table class="playerAttributes"><tr>
+						<td>Batting Contact:</td>
+						<td><div class="slider" id="battingContactSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="battingContact" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+						<td>Endurance:</td>
+						<td><div class="slider" id="enduranceSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="endurance" maxLength="2" value="1" onchange="processSliderChange(this);"/></td>
+					</tr><tr>
+						<td>Batting Power:</td>
+						<td><div class="slider" id="battingPowerSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="battingPower" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+						<td>Durability:</td>
+						<td><div class="slider" id="durabilitySlider"></div></td>
+						<td><input class="smallNumber" type="text" id="durability" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+          </tr><tr>
+						<td>Running Speed:</td>
+						<td><div class="slider" id="runningSpeedSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="runningSpeed" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+						<td>Clutch:</td>
+						<td><div class="slider" id="clutchSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="clutch" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+          </tr><tr>
+						<td>Throwing Arm:</td>
+						<td><div class="slider" id="throwingArmSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="throwingArm" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+						<td>Fielding:</td>
+						<td><div class="slider" id="fieldingSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="fielding" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+          </tr><tr>
+					<td colspan="6"><hr></td>
+				  </tr><tr>
+						<td>Pitch Power:</td>
+						<td><div class="slider" id="pitchPowerSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="pitchPower" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+					  <td colspan="3"></td>
+					</tr><tr>
+						<td>Pitch Control:</td>
+						<td><div class="slider" id="pitchControlSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="pitchControl" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+					  <td colspan="3"></td>
+					</tr><tr>
+						<td>Pitch Movement:</td>
+						<td><div class="slider" id="pitchMovementSlider"></div></td>
+						<td><input class="smallNumber" type="text" id="pitchMovement" maxlength="2" value="1" onchange="processSliderChange(this);"/></td>
+					  <td colspan="3"></td>
+					</tr></table>
+				Player Preview:
+					<div id="playerPreview"></div><br />
+					<button onclick="javascript:submitPlayerChanges();">Submit Changes</button>
+      </div>
+	  </div>
+	</div>
+	
+	<div id="teams_window" class="window">
+		<div class="title_bar">Teams</div>
+	  <div id="teams_window_inner" class="window_inner">
+			<button onclick="addBlankTeam();">New Team</button>
+      <div id="teams"></div>
+	  </div>
+	</div>
+	
+	<div id="team_window" class="window">
+		<div class="title_bar">Team Details</div>
+	  <div id="team_window_inner" class="window_inner">
+      <div id="team">
+				City: <input type="text" id="city"/>Name: <input type="text" id="teamName"/> <br />
+				Short Name: <input type="text" id="teamShortName"/> <br />
+				League: <select id="league"><option value="american">American</option><option value="national">National</option><option value="special">Special</option></select>
+				Stadium Name: <input type="text" id="stadiumName"/> <br />Stadium File: <input type="text" id="stadiumFile"/>
+				Stadium Location: <input type="text" id="stadiumLocation"/><br />
+				Manager Name: <input type="text" id="managerFirstName"/> <input type="text" id="managerLastName"/><br />
+				Manager Nickname: <input type="text" id="managerNickname"/><br />
+				Team Logo: <div id="teamLogoImage"></div><input type="text" id="teamLogoX"/><input type="text" id="teamLogoY"/>
+					<button onclick="javascript:populateWithSprite('teamLogoX', 'teamLogoY', 'teamLogoImage', false);">Populate</button><br />
+				Stadium Logo: <div id="stadiumLogoImage"></div><input type="text" id="stadiumLogoX"/><input type="text" id="stadiumLogoY"/>
+					<button onclick="javascript:populateWithSprite('stadiumLogoX', 'stadiumLogoY', 'stadiumLogoImage', false);">Populate</button><br />
+				<br />
+				<button id="homeButton" type="button" disabled="disabled" onclick="clickHomeButton();">Home</button>&nbsp;
+				<button id="awayButton" type="button" onclick="clickAwayButton();">Away</button>
+				
+				<div id="homeUniform">
+					Home Uniform Colors:<br />
+						<div style="padding:10px;">
+							LogoBase: <input id="home_uniformColor_logoBase" class="color"/>
+							LogoTrim: <input id="home_uniformColor_logoTrim" class="color"/><br />
+							Cap: <input id="home_uniformColor_cap" class="color"/>
+							Cap Logo: <input id="home_uniformColor_capLogo" class="color"/><br />
+							Shirt Trim: <input id="home_uniformColor_shirtTrim" class="color"/>
+							Socks: <input id="home_uniformColor_socks" class="color"/><br />
+							Undershirt: <input id="home_uniformColor_undershirt" class="color"/>
+							Pants Trim: <input id="home_uniformColor_pantsTrim" class="color"/><br />
+							Belt: <input id="home_uniformColor_belt" class="color"/>
+							Number: <input id="home_uniformColor_number" class="color"/>
+						</div>
+					Home Uniform Styles:
+						<div style="padding:10px;">
+							Shirt Type: 
+								<select id="home_shirtType"><option value="normal">Normal</option><option value="pinstripes">Pinstripes</option>
+									<option value="tanktopSleeves">Tanktop Sleeves</option><option value="None">None</option>
+								</select>
+							Pants Type:
+								<select id="home_pantsType"><option value="normal">Normal</option><option value="pinstripes">Pinstripes</option>
+									<option value="none">None</option>
+								</select>
+							<br />
+							Logo Type:
+								<select id="home_logoType"><option value="chest">Chest</option><option value="leftBreast">Left Breast</option>
+									<option value="none">None</option>
+								</select>
+							Number Type:
+								<select id="home_numberType"><option value="back">Back</option><option value="rightBreast">Right Breast</option>
+									<option value="none">None</option>
+								</select>
+						</div>
+				</div>
+				<div id="awayUniform">
+					Away Uniform Colors:<br />
+						<div style="padding:10px;">
+							LogoBase: <input id="away_uniformColor_logoBase" class="color"/>
+							LogoTrim: <input id="away_uniformColor_logoTrim" class="color"/><br />
+							Cap: <input id="away_uniformColor_cap" class="color"/>
+							Cap Logo: <input id="away_uniformColor_capLogo" class="color"/><br />
+							Shirt Trim: <input id="away_uniformColor_shirtTrim" class="color"/>
+							Socks: <input id="away_uniformColor_socks" class="color"/><br />
+							Undershirt: <input id="away_uniformColor_undershirt" class="color"/>
+							Pants Trim: <input id="away_uniformColor_pantsTrim" class="color"/><br />
+							Belt: <input id="away_uniformColor_belt" class="color"/>
+							Number: <input id="away_uniformColor_number" class="color"/>
+						</div>
+					Away Uniform Styles:
+						<div style="padding:10px;">
+							Shirt Type: 
+								<select id="away_shirtType"><option value="normal">Normal</option><option value="pinstripes">Pinstripes</option>
+									<option value="tanktopSleeves">Tanktop Sleeves</option><option value="None">None</option>
+								</select>
+							Pants Type:
+								<select id="away_pantsType"><option value="normal">Normal</option><option value="pinstripes">Pinstripes</option>
+									<option value="none">None</option>
+								</select>
+							<br />
+							Logo Type:
+								<select id="away_logoType"><option value="chest">Chest</option><option value="leftBreast">Left Breast</option>
+									<option value="none">None</option>
+								</select>
+							Number Type:
+								<select id="away_numberType"><option value="back">Back</option><option value="rightBreast">Right Breast</option>
+									<option value="none">None</option>
+								</select>
+						</div>
+				</div>
+				Lineup:
+					<div style="padding:10px;">
+						1:<select id="lineupPosition_1"></select> <select id="lineupPlayer_1"></select><br />
+						2:<select id="lineupPosition_2"></select> <select id="lineupPlayer_2"></select><br />
+						3:<select id="lineupPosition_3"></select> <select id="lineupPlayer_3"></select><br />
+						4:<select id="lineupPosition_4"></select> <select id="lineupPlayer_4"></select><br />
+						5:<select id="lineupPosition_5"></select> <select id="lineupPlayer_5"></select><br />
+						6:<select id="lineupPosition_6"></select> <select id="lineupPlayer_6"></select><br />
+						7:<select id="lineupPosition_7"></select> <select id="lineupPlayer_7"></select><br />
+						8:<select id="lineupPosition_8"></select> <select id="lineupPlayer_8"></select><br />
+						9:<select id="lineupPosition_9"></select> <select id="lineupPlayer_9"></select><br />
+					</div>
+				Team Player Preview:
+					<div id="teamPlayerPreview"></div><br />
+				<button onclick="javascript:submitTeamChanges();">Submit Changes</button>
+      </div>
+	  </div>
+	</div>
+
+	<div id="sprites_window" class="window">
+		<div class="title_bar">Sprites</div>
+	  <div id="sprites_window_inner" class="window_inner">
+      <div id="sprites"></div>
+	  </div>
+	</div>
+		
+  </body>
+</html>

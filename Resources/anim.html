@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <link href="jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="jquery.min.js"></script>
+    <script src="jquery-ui.min.js"></script>
+    <script src="ruby.rb" type="text/ruby"></script>
+    <script type="text/javascript" src="misc.js"></script>
+    <script type="text/javascript" src="init_anim.js"></script>
+		<script type="text/javascript" src="functions_anim.js"></script>
+		<script type="text/javascript" src="files.js"></script>
+		<link href="common.css" media="screen" rel="Stylesheet" type="text/css"/>
+    <link href="main_anim.css" media="screen" rel="Stylesheet" type="text/css"/>
+  </head>
+  <body onload="init();">
+    <!--
+    <div id="message_window">Messages go here.</div>
+    
+		<div id="tools_window" class="content">
+ 
+		</div>
+		-->
+	
+	<div id="animations_window" class="window">
+		<div class="title_bar">Animations</div>
+	  <div id="animations_window_inner" class="window_inner">
+			<button onclick="addBlankAnimation();">Add Animation</button>
+      <div id="animations">
+	
+      </div>
+	  </div>
+	</div>
+	
+	<div id="animation_window" class="window">
+		<div class="title_bar">Animation</div>
+	  <div id="animation_window_inner" class="window_inner">
+      <div id="animation">
+				<button onclick="addBlankFrame();">Add Frame</button>
+				<button onclick="popFrame();">Pop Last Frame</button><br />
+				Name: <input type="text" id="animationName"/><br />
+				Frame Delay: <input type="text" id="frameDelay"/><br />	
+				Frames: <br />
+				<div id="frames">
+					
+				</div>		
+				<button	onclick="submitAnimChanges();">Submit</button>
+      </div>
+	  </div>
+	</div>
+
+	<div id="sprites_window" class="window">
+		<div class="title_bar">Sprites</div>
+	  <div id="sprites_window_inner" class="window_inner">
+      <div id="sprites"></div>
+	  </div>
+	</div>
+		
+  </body>
+</html>
