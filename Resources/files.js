@@ -16,6 +16,17 @@ function specifyResourceFolder(result, arr){
     return false;
   }
   
+  //Make the resources folder writable
+  var cmd = ["chmod", "777"];
+/*
+  if(Titanium.platform == "win32"){
+    cmd = ["C:\\Windows\\System32\\cmd.exe", "/C", "mklink"];
+  }
+*/
+  cmd.push( Titanium.Filesystem.getResourcesDirectory() );
+  var process = Titanium.Process.createProcess({ args: cmd });
+  process();
+  
   //Set resourcesDirectory variable and create symlink
   resourcesDirectory = result[0];
   var resourcesFolder = Titanium.Filesystem.getFile(resourcesDirectory);
@@ -184,12 +195,11 @@ function parsePlistFile(plistFile){
   //  NOTE: Important!!
   //  This currently does NOT support Zwoptex PLIST files. I either need to make this support Zwoptex
   //  or I just can't use Zwoptex with the baseball game.
-  
-  
-  
   var xmlDoc = parseXML(resourcesDirectory + plistFile);
   var rootPlist = xmlDoc.documentElement;// printNodeInfo(rootPlist);
   var rootDict = null;
+
+  var isZwoptex = false;
 
   for(i in rootPlist.childNodes){
     if(rootPlist.childNodes[i].tagName == "dict" && rootPlist.childNodes[i].firstChild.nodeValue != null){
@@ -203,58 +213,108 @@ function parsePlistFile(plistFile){
   
   var framesDict = null;
   var textureDict = null;
+  var metadataDict = null;
   var pngKeys = [];
   var pngDicts = [];
 
   for(i in rootDict.childNodes){
-    //printNodeInfo(rootDict.childNodes[i]);
     if(rootDict.childNodes[i].tagName == "key" && rootDict.childNodes[i].firstChild.nodeValue == "frames"){
-      //alert("Found key/frames: ");
-      //printNodeInfo(rootDict.childNodes[i].nextSibling.nextSibling);  //For some reason this is always two siblings over
+      //For some reason this is always two siblings over
       framesDict = rootDict.childNodes[i].nextSibling.nextSibling;
     }else if(rootDict.childNodes[i].tagName == "key" && rootDict.childNodes[i].firstChild.nodeValue == "texture"){
-      //alert("Found key/texture: ");
-      //printNodeInfo(rootDict.childNodes[i].nextSibling.nextSibling);  //For some reason this is always two siblings over
       textureDict = rootDict.childNodes[i].nextSibling.nextSibling;
-    }
+    }else if(rootDict.childNodes[i].tagName == "key" && rootDict.childNodes[i].firstChild.nodeValue == "metadata"){
+	    metadataDict = rootDict.childNodes[i].nextSibling.nextSibling;
+	  }
   }
   
+  if(metadataDict != null){ isZwoptex = true; }
+
   for(i in framesDict.childNodes){
     //This loops through all the frames, but, we still need to pull the dictionary out of here for size info
-    //printNodeInfo(framesDict.childNodes[i]);
-    
     if(framesDict.childNodes[i].tagName == "key"){
-      pngKeys.push(framesDict.childNodes[i].firstChild.nodeValue + "");  //Push the name into pngKeys (ie "fielder_up_throw_04.png")
-      //alert("Pushing " + framesDict.childNodes[i].firstChild.nodeValue + " into pngKeys");
+      //Push the name into pngKeys (ie "fielder_up_throw_04.png")
+      pngKeys.push(framesDict.childNodes[i].firstChild.nodeValue + "");  
     }else if(framesDict.childNodes[i].tagName == "dict"){
-      pngDicts.push(framesDict.childNodes[i]);  //Push the whole dict into pngDicts
-      //alert("Pushing " + framesDict.childNodes[i] + " into pngDicts");
+      //Push the whole dict into pngDicts
+      if(isZwoptex){
+        var pngDict = framesDict.childNodes[i];
+        var dict = new Array();
+        
+        for(x in pngDict.childNodes){
+          if(pngDict.childNodes[x].tagName == "key"){
+            //Normally we take every key and place it in pngDicts
+            //This time, we need to convert one to another
+            var value = pngDict.childNodes[x].firstChild.nodeValue;
+            if(value == "textureRect"){
+              var textureRect = pngDict.childNodes[x].nextSibling.nextSibling.firstChild.nodeValue;
+              //alert("textureRect: " + textureRect);
+              textureRect = textureRect.replace(/{/g,"").replace(/}/g,"").replace(/ /g,"").split(",");
+              dict["x"] = parseFloat(textureRect[0]);
+              dict["y"] = parseFloat(textureRect[1]);
+              dict["width"] = parseFloat(textureRect[2]);
+              dict["height"] = parseFloat(textureRect[3]);
+              dict["originalWidth"] = parseFloat(textureRect[2]);
+              dict["originalHeight"] = parseFloat(textureRect[3]);
+            }else if(value == "spriteOffset"){
+              var spriteOffset = pngDict.childNodes[x].nextSibling.nextSibling.firstChild.nodeValue;
+              //alert("spriteOffset: " + spriteOffset);
+              spriteOffset = spriteOffset.replace(/{/g,"").replace(/}/g,"").replace(/ /g,"").split(",");
+              dict["offsetX"] = parseFloat(spriteOffset[0]);
+              dict["offsetY"] = parseFloat(spriteOffset[1]);
+            }
+          }
+        }
+        pngDicts.push(dict);
+      }else{
+        pngDicts.push(framesDict.childNodes[i]);
+      }
     }
   }
-  
-  for(i in textureDict.childNodes){
-    if(textureDict.childNodes[i].tagName == "key"){
-      if(textureDict.childNodes[i].firstChild.nodeValue == "height"){
-        textureArray[plistFile]["height"] = textureDict.childNodes[i].nextSibling.nextSibling.firstChild.nodeValue;
-      }else if(textureDict.childNodes[i].firstChild.nodeValue == "width"){
-        textureArray[plistFile]["width"] = textureDict.childNodes[i].nextSibling.nextSibling.firstChild.nodeValue;
+
+  if(isZwoptex){
+		for(i in metadataDict.childNodes){
+		  if(metadataDict.childNodes[i].tagName == "size"){
+		    if(metadataDict.childNodes[i].firstChild.nodeValue == "height"){
+		      var size = metadataDict.childNodes[i].nextSibling.nextSibling.firstChild.nodeValue;
+		      size = size.replace("{","").replace("}","").replace(" ","").split(",");
+		      textureArray[plistFile]["width"] = parseFloat(size[0]);
+		      textureArray[plistFile]["height"] = parseFloat(size[1]);
+		      
+		      alert("Width: " + textureArray[plistFile]["width"] + " Height: " + textureArray[plistFile]["height"]);
+        }
+		  }
+		}
+  }else{
+    for(i in textureDict.childNodes){
+      if(textureDict.childNodes[i].tagName == "key"){
+        if(textureDict.childNodes[i].firstChild.nodeValue == "height"){
+          textureArray[plistFile]["height"] = textureDict.childNodes[i].nextSibling.nextSibling.firstChild.nodeValue;
+        }else if(textureDict.childNodes[i].firstChild.nodeValue == "width"){
+          textureArray[plistFile]["width"] = textureDict.childNodes[i].nextSibling.nextSibling.firstChild.nodeValue;
+        }
       }
     }
   }
   
   //NOTE: There are as many pngKeys as there are pngDicts
-  for(i in pngDicts){
-    textureArray[plistFile][pngKeys[i]] = new Array(); //Make room for this specific texture
-    for(x in pngDicts[i].childNodes){
-      //Load in each attribute into the textureArray
-      //printNodeInfo(pngDicts[i].childNodes[x]);
-      if(pngDicts[i].childNodes[x].tagName == "key"){
-        textureArray[ plistFile ][ pngKeys[i] ][ pngDicts[i].childNodes[x].firstChild.nodeValue ] = 
-          pngDicts[i].childNodes[x].nextSibling.nextSibling.firstChild.nodeValue;
+  if(isZwoptex){
+    for(i in pngDicts){
+      textureArray[plistFile][pngKeys[i]] = pngDicts[i];
+    }    
+  }else{
+    for(i in pngDicts){
+      textureArray[plistFile][pngKeys[i]] = new Array(); //Make room for this specific texture
+      for(x in pngDicts[i].childNodes){
+        //Load in each attribute into the textureArray
+        if(pngDicts[i].childNodes[x].tagName == "key"){
+          textureArray[ plistFile ][ pngKeys[i] ][ pngDicts[i].childNodes[x].firstChild.nodeValue ] = 
+            pngDicts[i].childNodes[x].nextSibling.nextSibling.firstChild.nodeValue;
+        }
       }
-    }
+    }        
   }
-          
+        
   return;
 }
 
