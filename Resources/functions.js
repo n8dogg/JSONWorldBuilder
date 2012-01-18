@@ -303,7 +303,7 @@ function clearMetaFields(){
   numberOfMetaFields = 0;
 }
 
-function setObjectPosSize(){
+function setObjectPosSizeZ(){
   try{
   
   var obj = null;
@@ -320,6 +320,8 @@ function setObjectPosSize(){
   var x = document.getElementById('mapObjectPosXInput').value; var y = document.getElementById('mapObjectPosYInput').value;
   var oldWidth = obj.style.width; var oldHeight = obj.style.height;
   var newWidth = document.getElementById('mapObjectWidthInput').value; var newHeight = document.getElementById('mapObjectHeightInput').value;
+  var oldZ = obj.style.zIndex;
+  var newZ = document.getElementById('mapObjectZInput').value;
   
   var changePos = false;
   if(x != "" && parseFloat(x)+"" != "NaN"){ 
@@ -344,10 +346,20 @@ function setObjectPosSize(){
     newHeight = oldHeight;
   }
   
+  var changeZ = false;
+  if(newZ != "" && parseFloat(newZ)+"" != "NaN"){
+    changeZ = true;
+  }else{
+    newZ = oldZ;
+  }
+  
   //Finally, apply everything. First push our undo onto the stack, then do our action.
   undoStack.push( function(){ 
     if(changePos){
       obj.style.left = oldX; obj.style.top = oldY;
+    }
+    if(changeZ){
+      obj.style.zIndex = oldZ;
     }
     if(changeSize && type == "map" && mapDataArray["mapNodes"][selectedMapObject.id]["type"] == "tiledSprite"){
       mapDataArray["mapNodes"][selectedMapObject.id]["width"] = oldWidth;
@@ -363,9 +375,17 @@ function setObjectPosSize(){
     if(type == "map"){ setMapObjectPositionInfo(); }
     else if(type == "mask"){ setMaskObjectPositionInfo(); }
   }
+  
+  if(changeZ){
+    mapDataArray["mapNodes"][selectedMapObject.id]["zIndex"] = newZ; 
+    obj.style.zIndex = newZ;
+  }
+  
   if(changeSize && type == "map" && mapDataArray["mapNodes"][selectedMapObject.id]["type"] == "tiledSprite"){
     mapDataArray["mapNodes"][selectedMapObject.id]["width"] = newWidth;
     mapDataArray["mapNodes"][selectedMapObject.id]["height"] = newHeight;
+    //Hack (to fix the bug here where Move Camera doesn't show redrawn tiled sprites)
+    //mapDataArray["mapNodes"][selectedMapObject.id]["zIndex"] = parseInt(mapDataArray["mapNodes"][selectedMapObject.id]["zIndex"]) + 20000;
     createObjectWithMapNode(mapDataArray["mapNodes"][selectedMapObject.id], null);
     editDeleteSelected(null, false);
   }
