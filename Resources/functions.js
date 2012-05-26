@@ -247,6 +247,8 @@ document.onkeypress = function(e){
     if(controlPressed){ editUndo(); }
   }else if(e.which+"" == "121"){
     if(controlPressed){ editRedo(); }
+  }else if(e.which+"" == "115"){
+    if(controlPressed){ fileSave(); }
   }
   /*
   if( parseFloat(e.charCode+"") >= 49 && parseFloat(e.charCode+"") <= 55 ){
@@ -463,10 +465,10 @@ function setMaskObjectPositionInfo(){
   document.getElementById('mapObjectZIndex').innerHTML = ""; document.getElementById('mapObjectSize').innerHTML = "";
 }
 
-function fileNewMap(){
+function fileNew(){
   
 }
-function fileOpenMap(){
+function fileOpen(){
   var options = {
 	  title: "Open map file...",
 		multiple:false,
@@ -477,7 +479,7 @@ function fileOpenMap(){
   
 	Titanium.UI.openFileChooserDialog(openMap, options);
 }
-function fileSaveMap(){
+function fileSaveAs(){
   var options = {
     filename: "myMap.json",
     title: "Save file as...",
@@ -488,7 +490,12 @@ function fileSaveMap(){
   
   Titanium.UI.openSaveAsDialog(saveMap, options);
 }
-function fileCloseMap(){
+function fileSave(){
+  if(mapDiskLocation != null){
+    saveMap(mapDiskLocation);
+  }
+}
+function fileClose(){
   closeMap();
 }
 function fileQuit(){
@@ -744,6 +751,8 @@ function resourcesReloadResources(){
 
 /* Callbacks */
 function saveMap(result){
+  mapDiskLocation = result;
+  
   var nodes = mapDataArray["mapNodes"];
 
   //Process PLIST and PNG files
@@ -826,6 +835,8 @@ function closeMap(){
 }
 
 function openMap(result){
+  mapDiskLocation = result;
+
   closeMap(); //Close any current open map
   
   openingMap = true;

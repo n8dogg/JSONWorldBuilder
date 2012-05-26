@@ -54,6 +54,8 @@ var gridSize = 5;  //The size of the grid to snap to. This needs to be 5 because
 var undoStack = new Array(); //These hold function calls
 var redoStack = new Array();
 
+var mapDiskLocation = null;  //For saving maps
+
 /* These are temporary variables used for loading nodes from a map file */
 var openingMap = false; //Whether or not we are in the process of opening a map
 var openMapOriginX = null;
@@ -274,19 +276,20 @@ function initNodeDrag(node){
 
 function createMainMenu(){
   var mainMenu = Titanium.UI.createMenu();
-
+  
   mainMenu.appendItem(Titanium.UI.createMenuItem("File"));
   var fileMenu = Titanium.UI.createMenu();
-  fileMenu.appendItem(Titanium.UI.createMenuItem("New Map", function() { fileNewMap(); }));
-  fileMenu.appendItem(Titanium.UI.createMenuItem("Open Map", function() { fileOpenMap(); }));
-  fileMenu.appendItem(Titanium.UI.createMenuItem("Save Map", function() { fileSaveMap(); }));
-  fileMenu.appendItem(Titanium.UI.createMenuItem("Close Map", function() { fileCloseMap(); }));
+  fileMenu.appendItem(Titanium.UI.createMenuItem("New", function() { fileNew(); }));
+  fileMenu.appendItem(Titanium.UI.createMenuItem("Open", function() { fileOpen(); }));
+  fileMenu.appendItem(Titanium.UI.createMenuItem("Save (CTRL+S)", function() { fileSave(); }));
+  fileMenu.appendItem(Titanium.UI.createMenuItem("Save As", function() { fileSaveAs(); }));
+  fileMenu.appendItem(Titanium.UI.createMenuItem("Close", function() { fileClose(); }));
   fileMenu.appendItem(Titanium.UI.createMenuItem("Quit", function() { fileQuit(); }));
   mainMenu.getItemAt(0).setSubmenu(fileMenu);
   
   mainMenu.appendItem(Titanium.UI.createMenuItem("Edit"));
   var editMenu = Titanium.UI.createMenu();
-  editMenu.appendItem(Titanium.UI.createMenuItem("Undo", function() { editUndo(); }));
+  editMenu.appendItem(Titanium.UI.createMenuItem("Undo (CTRL+Z)", function() { editUndo(); }));
   editMenu.appendItem(Titanium.UI.createMenuItem("Redo", function() { editRedo(); }));
   editMenu.appendItem(Titanium.UI.createMenuItem("Delete Selected", function() { editDeleteSelected(null, false); }));
   editMenu.appendItem(Titanium.UI.createMenuItem("Copy Selected", function() { editCopySelected(); }));
