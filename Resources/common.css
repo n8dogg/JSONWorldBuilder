@@ -1,6 +1,9 @@
 body { position:absolute; font-family:arial; font-size:10pt; }
 div.window { width: 800px; height: 600px; background: #eee; border:1px solid black; position:absolute; }
 div.window_inner { overflow:auto; background:#fff; border-bottom:1px solid black; }
+div.window_inner_map { background:#fff; border:100px solid white; }
+div.map {  }
+
 canvas.spriteNode { position:absolute; }
 canvas.selected { border:5px dashed red; cursor:pointer; margin:-5px; }
 div.window div.title_bar { height:20px; background:#ccc; cursor:pointer; border-bottom:1px solid black; padding:5px; }

@@ -1,34 +1,77 @@
 ================================================================================================
-JSONWorldBuilder v0.1
+JSONWorldBuilder v0.11
 README
 ================================================================================================
-
-
 
 
 ================================================================================================
 About:
 ------------------------
- - JSONWorldBuilder is a 2D level editor built using Titanium Desktop.
+ - JSONWorldBuilder is a 2D level editor built using Titanium Desktop, JSON, HTML5 and JQuery.
  - It is designed for iOS development.
+ - Features Include:
+    - PLIST support
+    - Multiple layers
+    - Points, Lines and Polygons
+    - Metadata
+    - Tiled PNGs
+    - Polygon PNG Masks
+    - Unlimited Canvas Size
+    - Image flipping
+    - Zooming
+    - Undo/redo stack
+    - Small map file size (JSON)
+ - JSONWorldBuilder also includes:
+    - Baseball roster editor (designed for Golden Age Baseball TBA iOS game)
+    - Animation editor
 ================================================================================================
 
 
+================================================================================================
+News (updated 5/3/2012):
+------------------------
+I'm finally working on a commercial iOS game. So, this 2D level editor will see a bunch of 
+improvements over the next few months.
+================================================================================================
+
+
+================================================================================================
+Roadmap:
+------------------------
+Features To Be Added:
+ - More complex Undo/Redo stack
+ - Copy and paste
+ - More verbose program messages
+ - Windows version
+ - Unlimited Left/Up scrolling in Map window
+ - Top-down AI bot node creation tool
+ - Side-scrolling AI bot node creation tool
+Misc To Do:
+ - Tutorial Video
+ - iOS JSON map parsing library
+================================================================================================
 
 
 ================================================================================================
 Latest Build:
 ------------------------
- - The latest build can be found in the 'dist' folder.
+ - The latest build can be found in the 'dist' folder. You can also find archive builds here.
 ================================================================================================
-
-
-
 
 
 ================================================================================================
 Changes:
 ------------------------
- - 8/4/2011 - Added Zwoptex support.
- - 8/3/2011 - Added to github repo.
+ 5/31/2012 
+  - Fixed a number of bugs.
+  - Added support for Zwoptex PLIST files.
+ 
+ 5/25/2012 
+  - Added a Save command.
+ 
+ 8/4/2011 
+  - Added Zwoptex support.
+ 
+ 8/3/2011 
+  - Added to github repo.
 ================================================================================================

@@ -113,6 +113,8 @@ function resetGlobals(){
   openMapDrawnLines = null;
   openMapFlipX = null;
   openMapFlipY = null;
+  
+  mapDiskLocation = null;
 }
 
 function init() {

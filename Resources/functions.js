@@ -3,7 +3,8 @@ function getMapMouseX(e){
   if(e == null){
     return mouseX;
   }else{
-    mouseX = parseInt( (e.clientX-parseInt($('#map_window').css("left"))+$("#map_window_inner").attr("scrollLeft")-10)*(100/zoom) + window.pageXOffset);
+    mouseX = parseInt( (e.clientX-parseInt($('#map_window').css("left"))+$("#map_window_inner").attr("scrollLeft")-10-100)*(100/zoom) + window.pageXOffset);
+    //mouseX -= 100;  //Beacuse of map inner border
   }
   if(shiftPressed){
     mouseX -= mouseX%10;
@@ -16,7 +17,8 @@ function getMapMouseY(e){
   if(e == null){
     return mouseY;
   }else{
-    mouseY = parseInt( (e.clientY-parseInt($('#map_window').css("top"))+$("#map_window_inner").attr("scrollTop")-40)*(100/zoom) + window.pageYOffset);  
+    mouseY = parseInt( (e.clientY-parseInt($('#map_window').css("top"))+$("#map_window_inner").attr("scrollTop")-40-100)*(100/zoom) + window.pageYOffset);  
+    //mouseY -= 100;  //Beacuse of map inner border
   }
   if(shiftPressed){
     mouseY -= mouseY%10;
@@ -466,7 +468,7 @@ function setMaskObjectPositionInfo(){
 }
 
 function fileNew(){
-  
+  closeMap();
 }
 function fileOpen(){
   var options = {
@@ -493,6 +495,8 @@ function fileSaveAs(){
 function fileSave(){
   if(mapDiskLocation != null){
     saveMap(mapDiskLocation);
+  }else{
+    fileSaveAs();
   }
 }
 function fileClose(){
@@ -558,10 +562,10 @@ function editDeleteSelected(objectToDelete, override){
   }
 }
 function editCopySelected(){
-
+  alert("Not Yet Implemented");
 }
 function editPasteSelected(){
-  
+  alert("Not Yet Implemented");
 }
 function editBringToFront(){
   var zIndex = parseFloat( $(selectedMapObject).css("zIndex") );
@@ -649,7 +653,7 @@ function viewShowHideSprites(){
   }
 }
 function mapEditMapProperties(){
-  
+  alert("Not Yet Implemented");
 }
 function toolsSelectTool(num){
   if(selectedTool == num){
@@ -746,11 +750,15 @@ function resourcesSpecifyResourceFolder(){
   setCanvasSize();
 }
 function resourcesReloadResources(){
-  
+  specifyResourceFolder([resourcesDirectory], mapDataArray);
 }
 
 /* Callbacks */
 function saveMap(result){
+  if(result == null || result[0] == null){
+    return;
+  }
+  
   mapDiskLocation = result;
   
   var nodes = mapDataArray["mapNodes"];
@@ -786,25 +794,6 @@ function saveMap(result){
   for(i in nodes){
     if(document.getElementById(i) != null){
       setMapObjectPositionInfo(document.getElementById(i));
-      
-      /*
-      console.log(i);
-      console.log("Switching "+nodes[i]["originX"]+" with "+document.getElementById(i).style.left+" and "+nodes[i]["originY"]+" with "+document.getElementById(i).style.top);
-
-      if(nodes[i]["drawnLines"] != null){
-        for(j in nodes[i]["drawnLines"]){
-          var line = nodes[i]["drawnLines"][j];
-          
-          line["fromX"] +=  parseFloat( document.getElementById(i).style.left ) - parseFloat( nodes[i]["originX"] );
-          line["fromY"] +=  parseFloat( document.getElementById(i).style.top ) - parseFloat( nodes[i]["originY"] );
-          line["toX"] +=  parseFloat( document.getElementById(i).style.left ) - parseFloat( nodes[i]["originX"] );
-          line["toY"] +=  parseFloat( document.getElementById(i).style.top ) - parseFloat( nodes[i]["originY"] );
-        }   
-      }
-      
-      nodes[i]["originX"] = parseFloat( document.getElementById(i).style.left );
-      nodes[i]["originY"] = parseFloat( document.getElementById(i).style.top );   
-      */
     }
   }
   
@@ -826,12 +815,12 @@ function closeMap(){
   $("#sprites").html("");
   //$("#metaFields").html("");
   
+  resetGlobals();
+  
   document.getElementById('canvasWidth').value = 1000;
   document.getElementById('canvasHeight').value = 1000;
   setCanvasSize();
   setZoom(100);
-
-  resetGlobals();
 }
 
 function openMap(result){
@@ -846,11 +835,13 @@ function openMap(result){
   var file = Titanium.Filesystem.getFile(result[0]);
   var openMapDataArray = Titanium.JSON.parse( file.read() );
   
-  //Set Globals
-  if(resourcesDirectory == null){ //Load in resources if neccessary
+  //Load or reload resources
+  if(openMapDataArray["resourcesDirectory"] != null){ 
     if( specifyResourceFolder([openMapDataArray["resourcesDirectory"]], mapDataArray) ){
-      setTimeout(function(){ continueOpenMap(result, file, openMapDataArray); },2000); //This is retarded, but, specifyResourceFolder needs 2 seconds to run.
+      setTimeout(function(){ continueOpenMap(result, file, openMapDataArray); },2000);
     }
+  }else{
+    setTimeout(function(){ continueOpenMap(result, file, openMapDataArray); },2000); 
   }
 }
 
@@ -1500,8 +1491,8 @@ function startPolygon(e){
 
 function drawPolygonLine(e,start){  //Start is whether or not this is a new line
   var style = "red";
-  var scrollLeft = parseFloat( $("#map_window_inner").attr("scrollLeft") )*(100/zoom);
-  var scrollTop = parseFloat( $("#map_window_inner").attr("scrollTop") )*(100/zoom);
+  var scrollLeft = parseFloat( $("#map_inner").attr("scrollLeft") )*(100/zoom);
+  var scrollTop = parseFloat( $("#map_inner").attr("scrollTop") )*(100/zoom);
   var mouseX = getMapMouseX(e);
   var mouseY = getMapMouseY(e);
   
@@ -1612,7 +1603,18 @@ function finishPolygon(e){
   }
   mapDataArray["mapNodes"][canvas.id]["zIndex"] = openMapZIndex || 35000;
   mapDataArray["mapNodes"][canvas.id]["type"] = "polygon";
-  mapDataArray["mapNodes"][canvas.id]["drawnLines"] = drawnLines;
+  //mapDataArray["mapNodes"][canvas.id]["drawnLines"] = drawnLines;
+  //Copy the drawnLines array (doesn't work otherwise for some reason)
+  mapDataArray["mapNodes"][canvas.id]["drawnLines"] = [];
+  for(i in drawnLines){
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i] = {};
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i]["fromX"] = parseFloat(drawnLines[i]["fromX"]);
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i]["fromY"] = parseFloat(drawnLines[i]["fromY"]);
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i]["toX"] = parseFloat(drawnLines[i]["toX"]);
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i]["toY"] = parseFloat(drawnLines[i]["toY"]);
+  }
+  //Add in origin
+  mapDataArray["mapNodes"][canvas.id]["originX"] = originX; mapDataArray["mapNodes"][canvas.id]["originY"] = originY;
    
   clickedX = null;
   clickedY = null;
@@ -1788,9 +1790,19 @@ function finishLine(e){
   }
   mapDataArray["mapNodes"][canvas.id]["zIndex"] = openMapZIndex || 35000;
   mapDataArray["mapNodes"][canvas.id]["type"] = "line";
-  mapDataArray["mapNodes"][canvas.id]["drawnLines"] = drawnLines;
+  //mapDataArray["mapNodes"][canvas.id]["drawnLines"] = drawnLines;
+  //Copy the drawnLines array (doesn't work otherwise for some reason)
+  mapDataArray["mapNodes"][canvas.id]["drawnLines"] = [];
+  for(i in drawnLines){
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i] = {};
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i]["fromX"] = parseFloat(drawnLines[i]["fromX"]);
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i]["fromY"] = parseFloat(drawnLines[i]["fromY"]);
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i]["toX"] = parseFloat(drawnLines[i]["toX"]);
+    mapDataArray["mapNodes"][canvas.id]["drawnLines"][i]["toY"] = parseFloat(drawnLines[i]["toY"]);
+  }
+  //Add in origin
   mapDataArray["mapNodes"][canvas.id]["originX"] = originX; mapDataArray["mapNodes"][canvas.id]["originY"] = originY;
-  
+
   clickedX = null;
   clickedY = null;
   

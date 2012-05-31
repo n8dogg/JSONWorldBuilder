@@ -10,9 +10,9 @@ function setTextureArrayPNG(){
   }
 }
 
-function specifyResourceFolder(result, arr){
+function specifyResourceFolder(result, arr){  
   if(result == null || result[0] == null || result[0].indexOf("Resources")+"" == "-1"){
-    alert("Please specifiy a proper Resources folder.");
+    alert("Please specify a proper Resources folder.");
     return false;
   }
   
@@ -27,15 +27,21 @@ function specifyResourceFolder(result, arr){
   var process = Titanium.Process.createProcess({ args: cmd });
   process();
   
-  //Set resourcesDirectory variable and create symlink
+  //Set resourcesDirectory variable
   resourcesDirectory = result[0];
   var resourcesFolder = Titanium.Filesystem.getFile(resourcesDirectory);
   var symlinkLocation = Titanium.Filesystem.getFile(Titanium.Filesystem.getResourcesDirectory(), "GameResources");
+  
+  //Delete the old symlink
+  symlinkLocation.deleteDirectory();
+
+  //Create the new symlink
   resourcesFolder.createShortcut(symlinkLocation);
   
   plistFiles = findPlistFiles(result);
   maskFiles = findMaskFiles(result);
   pngFiles = findPNGFiles(result);  //Finds all PNG files without PLists that are also not masks
+  //TO DO - Add "findJPGFiles"
   
   if(plistFiles.length == 0){
     alert("Could not find PLIST files at " + resourcesDirectory + ". Please check your JSON file. It uses an absolute path.");
@@ -194,7 +200,7 @@ function findPlistFilesRec(dirOrFile, plistFiles){
 function parsePlistFile(plistFile){
   //  NOTE: Important!!
   //  This currently does NOT support Zwoptex PLIST files. I either need to make this support Zwoptex
-  //  or I just can't use Zwoptex with the baseball game.
+  //  or I just can't use Zwoptex.
   var xmlDoc = parseXML(resourcesDirectory + plistFile);
   var rootPlist = xmlDoc.documentElement;// printNodeInfo(rootPlist);
   var rootDict = null;
@@ -256,12 +262,19 @@ function parsePlistFile(plistFile){
               dict["height"] = parseFloat(textureRect[3]);
               dict["originalWidth"] = parseFloat(textureRect[2]);
               dict["originalHeight"] = parseFloat(textureRect[3]);
+              
+              //alert("x:" + textureRect[0] + ", y:" + textureRect[1] + "width:" + textureRect[2] + ", height:" + textureRect[3]);
+              
             }else if(value == "spriteOffset"){
               var spriteOffset = pngDict.childNodes[x].nextSibling.nextSibling.firstChild.nodeValue;
               //alert("spriteOffset: " + spriteOffset);
               spriteOffset = spriteOffset.replace(/{/g,"").replace(/}/g,"").replace(/ /g,"").split(",");
-              dict["offsetX"] = parseFloat(spriteOffset[0]);
-              dict["offsetY"] = parseFloat(spriteOffset[1]);
+              //dict["offsetX"] = parseFloat(spriteOffset[0]);
+              //dict["offsetY"] = parseFloat(spriteOffset[1]);
+              dict["offsetX"] = 0;
+              dict["offsetY"] = 0;
+              
+              //alert("offsetY:" + spriteOffset[0] + ", offsetY:" + spriteOffset[1]);
             }
           }
         }
@@ -274,14 +287,12 @@ function parsePlistFile(plistFile){
 
   if(isZwoptex){
 		for(i in metadataDict.childNodes){
-		  if(metadataDict.childNodes[i].tagName == "size"){
-		    if(metadataDict.childNodes[i].firstChild.nodeValue == "height"){
+      if(metadataDict.childNodes[i].tagName == "key"){
+		    if(metadataDict.childNodes[i].firstChild.nodeValue == "size"){
 		      var size = metadataDict.childNodes[i].nextSibling.nextSibling.firstChild.nodeValue;
 		      size = size.replace("{","").replace("}","").replace(" ","").split(",");
 		      textureArray[plistFile]["width"] = parseFloat(size[0]);
 		      textureArray[plistFile]["height"] = parseFloat(size[1]);
-		      
-		      alert("Width: " + textureArray[plistFile]["width"] + " Height: " + textureArray[plistFile]["height"]);
         }
 		  }
 		}
@@ -301,6 +312,7 @@ function parsePlistFile(plistFile){
   if(isZwoptex){
     for(i in pngDicts){
       textureArray[plistFile][pngKeys[i]] = pngDicts[i];
+      //textureArray[plistFile][pngKeys[i]] = new Array();
     }    
   }else{
     for(i in pngDicts){
@@ -318,7 +330,7 @@ function parsePlistFile(plistFile){
   return;
 }
 
-function fillSpriteWindow(){
+function fillSpriteWindow(){  
   console.log("Grabbing sprites");
   
   var htmlString = "";
@@ -385,6 +397,6 @@ function fillSpriteWindow(){
   }
   htmlString += "</div>";
   
-  document.getElementById('sprites').innerHTML += htmlString;  
+  document.getElementById('sprites').innerHTML = htmlString;  
   setInnerSize(document.getElementById('sprites'));
 }
