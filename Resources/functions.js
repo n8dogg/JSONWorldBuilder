@@ -824,9 +824,9 @@ function closeMap(){
 }
 
 function openMap(result){
-  mapDiskLocation = result;
-
   closeMap(); //Close any current open map
+  
+  mapDiskLocation = result;
   
   openingMap = true;
   
@@ -1524,7 +1524,7 @@ function polygonFinishClicked(e){ //Whether or not you clicked the polygon's ori
   var mouseX = getMapMouseX(e);
   var mouseY = getMapMouseY(e);
   
-  var clickBoxSize = 32;
+  var clickBoxSize = 16 * (100/zoom);
   
   return pointInRect(mouseX, mouseY, polygonStartX-clickBoxSize/2, polygonStartY-clickBoxSize/2, clickBoxSize, clickBoxSize);
 }
@@ -1857,8 +1857,8 @@ function createSprite(x,y,e){
 }
 
 function getSpriteCanvas(width,height,x,y){
-  if(width < 1){ width = 1; }
-  if(height < 1){ height = 1; }
+  if(width < 10){ width = 10; }
+  if(height < 10){ height = 10; }
   
   var count = mapObjectCount;
   var canvas = document.createElement("canvas");
@@ -1876,8 +1876,8 @@ function getSpriteCanvas(width,height,x,y){
 }
 
 function getShapeCanvas(width,height,x,y){
-  if(width < 1){ width = 1; }
-  if(height < 1){ height = 1; } 
+  if(width < 10){ width = 10; }
+  if(height < 10){ height = 10; } 
   
   var count = mapObjectCount;
   var canvas = document.createElement("canvas");
